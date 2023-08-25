@@ -3,17 +3,23 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from googleapiclient import discovery
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    sentence_for_analysis: str
 
 app = FastAPI()
 
+origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 def check_toxicity_api(sentence):
   API_KEY = 'AIzaSyBNZPu0HgjQyP_fBa7dMaCuv8eJjAE8QJQ'
 
@@ -37,11 +43,16 @@ def check_toxicity_api(sentence):
   else:
     return False
   
-@app.post('/removeToxic')
-def check_for_toxicity():
-    print("here")
+
+@app.get('/')
+def read_root():
+  return {'message': 'Hello from FastAPI!'}
+
+@app.post('/removeToxic/')
+def check_for_toxicity(item: Item):
+    print(item.sentence_for_analysis)
     try:
-        sentence = request.json['sentence_for_analysis']
+        sentence = item.sentence_for_analysis
         toxic_status = check_toxicity_api(sentence)
         if toxic_status:
           response_json = {'info': "Success", 'toxic': True}
@@ -50,5 +61,6 @@ def check_for_toxicity():
           response_json = {'info': "Success", 'toxic': False}
           return response_json
     except Exception as e:
+        print(e)
         response_json = {'info': e, 'error': True}
         return response_json

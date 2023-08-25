@@ -63,28 +63,30 @@
     }
     removeToxicLanguage() {
       for (let sentence of this.sentences) {
-        fetch("http://localhost:8000/removeToxic", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            sentence_for_analysis: sentence,
-          }),
-        }).then((result) => {
-          result.json().then((response) => {
-            if (response.error) {
-              return;
-            }
-            if (response.toxic) {
-              this.sentences[index] = this.sentences[index].replace(
-                cursePattern,
-                " [[CENSORED]] "
-              );
-            }
-          });
-        });
+        // fetch("http://127.0.0.1:8000/removeToxic", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     "Accept": "*/*",
+        //   },
+        //   body: JSON.stringify({
+        //     sentence_for_analysis: sentence,
+        //   }),
+        // }).then((result) => {
+        //   result.json().then((response) => {
+        //     if (response.error) {
+        //       return;
+        //     }
+        //     if (response.toxic) {
+        //       this.sentences[index] = this.sentences[index].replace(
+        //         cursePattern,
+        //         " [[CENSORED]] "
+        //       );
+        //     }
+        //   });
+        // }).catch((error) => {
+        //   console.log(error)
+        // });
       }
       this.element.innerText = this.sentences.join(". ");
     }

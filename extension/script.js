@@ -6,7 +6,6 @@ async function getPageURL() {
 
   return pageURL;
 }
-
 async function fetchData() {
   const pageInfo = await fetch("https://jsonplaceholder.typicode.com/todos/1");
   const pageInfoJSON = await pageInfo.json();
