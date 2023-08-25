@@ -8,7 +8,9 @@
     "default_popup": "index.html",
     "default_title": "RMTX Dashboard"
   },
-
+  "background": {
+    "service_worker": "service-worker.js"
+  },
   "host_permissions": ["https://www.google.com/"],
   "permissions": ["tabs", "storage"],
   "content_scripts": [
@@ -17,4 +19,5 @@
       "js": ["content.js"]
     }
   ]
+  
 }

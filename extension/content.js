@@ -1,5 +1,5 @@
-(() => {
-  document.getElementsByClassName("text-6xl")[0].innerText =
+window.onload = async () => {
+  document.getElementsByClassName("mt-two")[0].innerText =
     "You son of a racist god looking monkey!";
   console.log(document.getElementsByClassName("text-6xl"));
 
@@ -61,32 +61,19 @@
         this.element.innerText = this.sentences.join(". ");
       }
     }
-    removeToxicLanguage() {
+    async removeToxicLanguage() {
       for (let sentence of this.sentences) {
-        // fetch("http://127.0.0.1:8000/removeToxic", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     "Accept": "*/*",
-        //   },
-        //   body: JSON.stringify({
-        //     sentence_for_analysis: sentence,
-        //   }),
-        // }).then((result) => {
-        //   result.json().then((response) => {
-        //     if (response.error) {
-        //       return;
-        //     }
-        //     if (response.toxic) {
-        //       this.sentences[index] = this.sentences[index].replace(
-        //         cursePattern,
-        //         " [[CENSORED]] "
-        //       );
-        //     }
-        //   });
-        // }).catch((error) => {
-        //   console.log(error)
-        // });
+        if (sentence.startsWith("You son of a racist god")) {
+          const response = await chrome.runtime.sendMessage({ phrase: sentence });
+          console.log(`Sent to service worker with response ${response}`);
+
+          if (response.toxic === true) {
+            this.sentences[index] = this.sentences[index].replace(
+              cursePattern,
+              " [[CENSORED]] "
+            );
+          }
+        }
       }
       this.element.innerText = this.sentences.join(". ");
     }
@@ -100,9 +87,15 @@
 
     for (let siteTag of siteTags) {
       let element = new Element(siteTag);
-      element.removeCurseWords();
-      element.removeToxicLanguage();
+      chrome.storage.local.get(["toggles"], (result) => {
+        if (result.toggles[0]) {
+          element.removeCurseWords();
+        }
+        if (result.toggles[1]) {
+          element.removeToxicLanguage();
+        }
+      });
       pageElements.push(element);
     }
   }
-})();
+};
