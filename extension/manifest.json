@@ -1,0 +1,20 @@
+{
+  "name": "Remove Toxic Data (RMTX)",
+  "version": "1.0.0",
+  "description": "Removes toxic and inappropriate text from the websites being visited.",
+  "manifest_version": 3,
+  "author": "Taptaplit, Glowstik, Chillingotter",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "RMTX Dashboard"
+  },
+
+  "host_permissions": ["https://www.google.com/"],
+  "permissions": ["tabs", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://jsonplaceholder.typicode.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
