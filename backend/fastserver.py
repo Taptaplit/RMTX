@@ -38,7 +38,7 @@ def check_toxicity_api(sentence):
 
   response = client.comments().analyze(body=analyze_request).execute()
   
-  if (response["attributeScores"]["TOXICITY"]["summaryScore"]["value"] > 0.55):
+  if (response["attributeScores"]["TOXICITY"]["summaryScore"]["value"] > 0.45):
     return True
   else:
     return False

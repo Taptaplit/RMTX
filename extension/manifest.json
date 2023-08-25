@@ -15,7 +15,7 @@
   "permissions": ["tabs", "storage"],
   "content_scripts": [
     {
-      "matches": ["*://jsonplaceholder.typicode.com/*"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["content.js"]
     }
   ]
