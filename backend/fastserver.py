@@ -30,7 +30,6 @@ def check_toxicity_api(sentence):
     discoveryServiceUrl="https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1",
     static_discovery=False,
   )
-
   analyze_request = {
     'comment': { 'text': sentence },
     'requestedAttributes': {'TOXICITY': {}}
@@ -38,7 +37,8 @@ def check_toxicity_api(sentence):
 
   response = client.comments().analyze(body=analyze_request).execute()
   
-  if (response["attributeScores"]["TOXICITY"]["summaryScore"]["value"] > 0.45):
+  if (response["attributeScores"]["TOXICITY"]["summaryScore"]["value"] > 0.4):
+    print(response["attributeScores"]["TOXICITY"]["summaryScore"]["value"], sentence)
     return True
   else:
     return False

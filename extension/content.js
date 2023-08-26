@@ -42,6 +42,7 @@ window.onload = async () => {
       this.id = element.id;
       this.sentences = this.text.split(". ");
       this.filtered = false;
+      this.changed = false;
     }
     removeCurseWords() {
       chrome.storage.local.get(["inappropriate-words"], (result) => {
@@ -63,19 +64,26 @@ window.onload = async () => {
             );
           } else {
             const curse_words = result["inappropriate-words"];
-            for (let sentence of this.sentences) {
+            this.sentences.forEach((sentence, i) => {
               for (let curse of curse_words) {
                 if (sentence.toLowerCase().includes(curse.toLowerCase())) {
-                  let index = this.sentences.indexOf(sentence);
-                  let cursePattern = new RegExp(curse, "gi");
-                  this.sentences[index] = this.sentences[index].replace(
-                    cursePattern,
-                    " [[CENSORED (Inappropriate Word)]] "
-                  );
+                  try {
+                    let index = i;
+                    let cursePattern = new RegExp(curse, "gi");
+                    this.sentences[index] = this.sentences[index].replace(
+                      cursePattern,
+                      " [[CENSORED]] "
+                    );
+                    this.changed = true;
+                  } catch (error) {
+                    console.log(error);
+                  }
                 }
               }
+            });
+            if (this.changed === true) {
+              this.element.innerText = this.sentences.join(". ");
             }
-            this.element.innerText = this.sentences.join(". ");
           }
         } catch (error) {
           console.log(error);
@@ -94,12 +102,16 @@ window.onload = async () => {
               let index = this.sentences.indexOf(sentence);
               this.sentences[index] = this.sentences[index].replace(
                 sentence,
-                " [[CENSORED (Toxic Sentence)]] "
+                " [[CENSORED]] "
               );
+              this.changed = true;
             }
           }
         }
-        this.element.innerText = this.sentences.join(". ");
+
+        if (this.changed === true) {
+          this.element.innerText = this.sentences.join(". ");
+        }
         this.filtered = true;
       }
     }
